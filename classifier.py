@@ -1,6 +1,8 @@
 import numpy as np
 import random
 import Image
+#Student added
+import os
 
 """
 This is your object classifier. You should implement the train and
@@ -23,8 +25,58 @@ class ObjectClassifier():
     reading in each image from your datasets.
     """
     def train(self):
-        pass
+				sydney  = "Sydney/"
+				cube = "Cube/"
+				tree = "Tree/"
+				steve = "Steve/"
+				objects = [sydney, cube, tree, steve]
+				path = "/v/filer4b/v38q001/jamesrf/Desktop/OpenNERO-2014-09-30-x86_64/Hw5/snapshots/edges/Training/"
+				for item in objects:
+					print item
+					for elt in os.listdir(path + item):
+						(np_edges, orientations) = load_image(path + item + elt)
+						top_half = orientations[:len(orientations) / 2]
+						bottom_half = orientations[len(orientations) / 2:]
+						print self.count_upward_oriented(np_edges, orientations)
+        #pass
+    def count_horizontal_pixels(self, np_edges, orientations):
+				sum_pix = 0
+				for i in range(len(orientations)):
+					for j in range(len(orientations[0])):
+							pixel = orientations[i][j]
+							if ((pixel == 0 or pixel == 180) and np_edges[i][j] != 0):
+								sum_pix += 1
+				return sum_pix
+
+    def count_vertical_pixels(self, orientations):
+				sum_pix = 0
+				for i in range(len(orientations)):
+					for j in range(len(orientations[0])):
+							pixel = orientations[i][j]
+							if (pixel == 270 or pixel == 90):
+								sum_pix += 1
+				return sum_pix
+
+
+
+    def count_upward_oriented(self, np_edges, orientations):
+				sum_pix = 0
+				for i in range(len(orientations)):
+					for j in range(len(orientations[0])):
+							pixel = orientations[i][j]
+							if ((pixel == 315 or pixel == 0 or pixel == 45) and np_edges[i][j] != 0):
+								sum_pix += 1
+				return sum_pix
+
+    def count_edge_pixels(self, np_edges):
+				sum_pix = 0
+				for i in range(len(np_edges)):
+					for j in range(len(np_edges[0])):
+						if (np_edges[i][j] != 0):
+							sum_pix += 1
+				return sum_pix
         
+
 """
 Loads an image from file and calculates the edge pixel orientations.
 Returns a tuple of (edge pixels, pixel orientations).
@@ -83,3 +135,9 @@ Finds the (approximate) orientation of an edge pixel.
 def find_orientation(upper_left, upper_center, upper_right, mid_left, mid_right, lower_left, lower_center, lower_right):
     a = np.array([upper_center, upper_left, upper_right, mid_left, mid_right, lower_left, lower_center, lower_right])
     return np_orientation[a.argmax()]
+
+
+def main():
+	classifier = ObjectClassifier()
+	classifier.train()
+main()
