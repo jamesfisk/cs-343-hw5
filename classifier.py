@@ -1,3 +1,4 @@
+from __future__ import division
 import numpy as np
 import random
 import Image
@@ -37,8 +38,50 @@ class ObjectClassifier():
 						(np_edges, orientations) = load_image(path + item + elt)
 						top_half = orientations[:len(orientations) / 2]
 						bottom_half = orientations[len(orientations) / 2:]
-						print self.count_upward_oriented(np_edges, orientations)
+						print self.num_black_pixels(np_edges)
         #pass
+
+
+
+		"""
+		IMAGE FEATURE FUNCTIONS
+		"""
+
+    def average_edge_pixel_value(self, np_edges):
+				pix_val = 0
+				for i in range(len(np_edges)):
+					for j in range(len(np_edges[0])):
+						pix_val += np_edges[i][j]
+				return (pix_val / (600 * 800))
+    
+    def average_nonzero_pixel_value(self, np_edges):
+				pix_val = 0
+				nonzero_pix = 0
+				for i in range(len(np_edges)):
+					for j in range(len(np_edges[0])):
+						pixel = np_edges[i][j]
+						if pixel != 0:
+							pix_val += pixel
+							nonzero_pix += 1
+				return (pix_val /nonzero_pix)
+   
+    def num_white_pixels(self, np_edges):
+        sum_pix = 0
+        for i in range(len(np_edges)):
+					for j in range(len(np_edges[0])):
+						if np_edges[i][j] == 255:
+							sum_pix += 1
+        return sum_pix
+
+    def num_black_pixels(self, np_edges):
+        sum_pix = 0
+        for i in range(len(np_edges)):
+					for j in range(len(np_edges[0])):
+						if np_edges[i][j] == 0:
+							sum_pix += 1
+        return sum_pix
+
+
     def count_horizontal_pixels(self, np_edges, orientations):
 				sum_pix = 0
 				for i in range(len(orientations)):
