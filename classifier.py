@@ -17,8 +17,42 @@ class ObjectClassifier():
     the result is displayed on top of the four-image panel.
     """
     def classify(self, edge_pixels, orientations):
-        return random.choice(self.labels)
-    
+        features = self.get_features(edge_pixels, orientations)
+        return features
+        #return random.choice(self.labels)
+
+
+    """
+		Returns a list of features for a given image.
+		f[0] -> Upward oriented edge pixels in top half of image
+		f[1] -> Upward oriented edge pixels in bottom half of image
+		f[2] -> Total upward oriented edge pixels
+		f[3] -> Horizontally oriented edge pixels
+		f[4] -> Vertically oriented edge pixels
+		f[5] -> Total number of edge pixels
+		f[6] -> Percentage of edge pixels
+		f[7] -> Proportion of horizontal edge pixels to vertical edge pixels
+		f[8] -> Average pixel value
+		f[9] -> Average nonblack pixel value
+		f[10] -> Number of white pixels
+		"""
+    def get_features (self, edge_pixels, orientations):
+			top_half = orientations[:len(orientations) / 2]
+			bottom_half = orientations[len(orientations) / 2:]
+
+			f = [self.count_upward_oriented(edge_pixels, top_half), 
+					 self.count_upward_oriented(edge_pixels, bottom_half),
+					 self.count_upward_oriented(edge_pixels, orientations),
+					 self.count_horizontal_pixels(edge_pixels, orientations),
+					 self.count_vertical_pixels(edge_pixels, orientations),
+					 self.count_edge_pixels(edge_pixels, orientations),
+					 self.count_edge_pixels(edge_pixels, orientations) / (600 * 800),
+					 self.count_horizontal_pixels(edge_pixels, orientations) / self.count_vertical_pixels(edge_pixels, orientations),
+					 self.average_edge_pixel_value(edge_pixels, orientations),
+					 self.average_nonzero_pixel_value(edge_pixels, orientations),
+					 self.num_white_pixels(edge_pixels, orientations)]
+
+			return f
     """
     This is your training method. Feel free to change the
     definition to take a directory name or whatever else you
@@ -36,25 +70,20 @@ class ObjectClassifier():
 					print item
 					for elt in os.listdir(path + item):
 						(np_edges, orientations) = load_image(path + item + elt)
-						top_half = orientations[:len(orientations) / 2]
-						bottom_half = orientations[len(orientations) / 2:]
-						print self.num_black_pixels(np_edges)
+						print self.classify(np_edges, orientations)
         #pass
-
-
-
-		"""
+    """
 		IMAGE FEATURE FUNCTIONS
 		"""
 
-    def average_edge_pixel_value(self, np_edges):
+    def average_edge_pixel_value(self, np_edges, orientations):
 				pix_val = 0
 				for i in range(len(np_edges)):
 					for j in range(len(np_edges[0])):
 						pix_val += np_edges[i][j]
 				return (pix_val / (600 * 800))
     
-    def average_nonzero_pixel_value(self, np_edges):
+    def average_nonzero_pixel_value(self, np_edges, orientations):
 				pix_val = 0
 				nonzero_pix = 0
 				for i in range(len(np_edges)):
@@ -65,7 +94,7 @@ class ObjectClassifier():
 							nonzero_pix += 1
 				return (pix_val /nonzero_pix)
    
-    def num_white_pixels(self, np_edges):
+    def num_white_pixels(self, np_edges, orientations):
         sum_pix = 0
         for i in range(len(np_edges)):
 					for j in range(len(np_edges[0])):
@@ -73,7 +102,7 @@ class ObjectClassifier():
 							sum_pix += 1
         return sum_pix
 
-    def num_black_pixels(self, np_edges):
+    def num_black_pixels(self, np_edges, orientations):
         sum_pix = 0
         for i in range(len(np_edges)):
 					for j in range(len(np_edges[0])):
@@ -91,7 +120,7 @@ class ObjectClassifier():
 								sum_pix += 1
 				return sum_pix
 
-    def count_vertical_pixels(self, orientations):
+    def count_vertical_pixels(self, np_edges, orientations):
 				sum_pix = 0
 				for i in range(len(orientations)):
 					for j in range(len(orientations[0])):
@@ -111,7 +140,7 @@ class ObjectClassifier():
 								sum_pix += 1
 				return sum_pix
 
-    def count_edge_pixels(self, np_edges):
+    def count_edge_pixels(self, np_edges, orientations):
 				sum_pix = 0
 				for i in range(len(np_edges)):
 					for j in range(len(np_edges[0])):
