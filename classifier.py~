@@ -21,9 +21,8 @@ class ObjectClassifier():
     the result is displayed on top of the four-image panel.
     """
     def classify(self, edge_pixels, orientations):
-       				features = self.get_features(edge_pixels, orientations)
-				#features = self.sydney_features
-				#print(features)
+       				#features = self.get_features(edge_pixels, orientations)
+				features = self.sydney_features
 				object_features = [self.sydney_features, self.cube_features, self.tree_features, self.steve_features]
 				scores = [.25, .25, .25, .25]
 				for i in range(len(features)):
@@ -33,12 +32,12 @@ class ObjectClassifier():
 					for j in range(len(feature_probs)):
 						scores[j] *= feature_probs[j] * weight
 				winner = scores.index(max(scores))
-      				return self.labels[winner]
+        return self.labels[winner]
 
     """
     Assigns a probability to each object based upon a single feature
     """
-    def probability_from_feature(self, feature, test_features):
+    def probability_from_feature(feature, test_features):
 				sum_abs = 0
 				feature_probs = []
 				for item in test_features:
