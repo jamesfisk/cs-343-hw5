@@ -1,0 +1,4 @@
+James Fisk and Kevin Hinojosa
+Homework 5 Vision Report
+
+We used a training sample of about 40 pictures with an even distribution between the four objects. We tested many features, and settled on using eleven for classification. These features are enumerated in classifier.py in the description for the get_features() method.
