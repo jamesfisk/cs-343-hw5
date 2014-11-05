@@ -236,7 +236,6 @@ def find_orientation(upper_left, upper_center, upper_right, mid_left, mid_right,
     return np_orientation[a.argmax()]
 
 
-def main():
+if __name__ == "__main__":
 	classifier = ObjectClassifier()
 	classifier.train()
-main()
